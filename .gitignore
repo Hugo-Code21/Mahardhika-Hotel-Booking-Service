@@ -1,0 +1,4 @@
+.env
+database.sqlite*
+cookies.txt
+uploads/

@@ -1,0 +1,5 @@
+Options -Indexes
+
+<FilesMatch "^(\.|database\.sqlite(-shm|-wal|-journal)?|cookies\.txt|database\.sql|migrate_sqlite_to_mysql\.php)$">
+    Require all denied
+</FilesMatch>
