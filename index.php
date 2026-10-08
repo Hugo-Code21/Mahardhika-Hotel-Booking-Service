@@ -116,6 +116,9 @@ $isStaffUser = $currentUser && in_array($currentUser['role'], ['admin', 'hotel_h
                     <a class="destination-tag" href="hotels.php?city=Bandung">Bandung</a>
                     <a class="destination-tag" href="hotels.php?city=Bali">Bali</a>
                     <a class="destination-tag" href="hotels.php?city=Jakarta">Jakarta</a>
+                    <a class="destination-tag" href="hotels.php?city=Yogyakarta">Yogyakarta</a>
+                    <a class="destination-tag" href="hotels.php?city=Surabaya">Surabaya</a>
+                    <a class="destination-tag" href="hotels.php?city=Semarang">Semarang</a>
                 </div>
                 <div class="grid">
                     <?php while ($hotel = $featuredHotels->fetch()): ?>
