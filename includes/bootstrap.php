@@ -336,6 +336,7 @@ function ensureDatabase(): void
 
     if (!defined('APP_SKIP_SEED')) {
         ensureJakartaDestination();
+        ensureSignatureDestinations();
     }
     $db->exec("UPDATE users SET hotel_id = (SELECT MIN(id) FROM hotels) WHERE role = 'hotel_head_admin' AND hotel_id IS NULL");
     ensureUserHotelRelation();
@@ -373,6 +374,73 @@ function ensureJakartaDestination(): void
             ':bed_type' => $room[3],
             ':facilities' => $room[4],
             ':image' => 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80',
+            ':room_number' => $room[5],
+            ':room_type' => $room[6],
+            ':status' => 'available',
+        ]);
+    }
+}
+
+function ensureSignatureDestinations(): void
+{
+    $db = db();
+    $hotelLookup = $db->prepare('SELECT id FROM hotels WHERE city = :city LIMIT 1');
+    $hotelInsert = $db->prepare('INSERT INTO hotels (name, city, address, rating, description, image) VALUES (:name, :city, :address, :rating, :description, :image)');
+    $roomInsert = $db->prepare('INSERT INTO rooms (hotel_id, name, price_per_night, max_guests, bed_type, facilities, image, room_number, room_type, status) VALUES (:hotel_id, :name, :price, :guests, :bed_type, :facilities, :image, :room_number, :room_type, :status)');
+
+    $destinations = [
+        [
+            'name' => 'Taman Sari Heritage Hotel',
+            'city' => 'Yogyakarta',
+            'address' => 'Jl. Prawirotaman No. 12, Yogyakarta',
+            'rating' => 4.7,
+            'description' => 'A refined heritage-inspired retreat near Yogyakarta’s galleries, gardens, and historic quarter.',
+            'image' => 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80',
+            'room' => ['Heritage Deluxe Room', 720000, 2, '1 King Bed', 'WiFi, AC, Breakfast, Garden View', '801', 'Deluxe'],
+        ],
+        [
+            'name' => 'Surabaya Grand Regency',
+            'city' => 'Surabaya',
+            'address' => 'Jl. Tunjungan No. 28, Surabaya',
+            'rating' => 4.6,
+            'description' => 'An elegant city stay with easy access to Surabaya’s dining, shopping, and business districts.',
+            'image' => 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80',
+            'room' => ['Executive City Room', 680000, 2, '1 Queen Bed', 'WiFi, AC, TV, Breakfast', '901', 'Executive'],
+        ],
+        [
+            'name' => 'Semarang Old Town Suites',
+            'city' => 'Semarang',
+            'address' => 'Jl. Letjen Suprapto No. 15, Semarang',
+            'rating' => 4.5,
+            'description' => 'A welcoming boutique base for exploring Semarang’s old town and distinctive local cuisine.',
+            'image' => 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=900&q=80',
+            'room' => ['Old Town Suite', 640000, 2, '1 King Bed', 'WiFi, AC, TV, Breakfast', '1001', 'Suite'],
+        ],
+    ];
+
+    foreach ($destinations as $destination) {
+        $hotelLookup->execute([':city' => $destination['city']]);
+        if ($hotel = $hotelLookup->fetch()) {
+            continue;
+        }
+
+        $hotelInsert->execute([
+            ':name' => $destination['name'],
+            ':city' => $destination['city'],
+            ':address' => $destination['address'],
+            ':rating' => $destination['rating'],
+            ':description' => $destination['description'],
+            ':image' => $destination['image'],
+        ]);
+        $room = $destination['room'];
+        $roomInsert->execute([
+            ':hotel_id' => (int) $db->lastInsertId(),
+            ':name' => $room[0],
+            ':price' => $room[1],
+            ':guests' => $room[2],
+            ':bed_type' => $room[3],
+            ':facilities' => $room[4],
+            ':image' => $destination['image'],
             ':room_number' => $room[5],
             ':room_type' => $room[6],
             ':status' => 'available',
