@@ -9,8 +9,14 @@ $guests = max(1, (int) ($_GET['guests'] ?? 2));
 
 $currentUser = currentUser();
 if (!$currentUser) {
-    $_SESSION['redirect_after_login'] = 'booking.php?room_id=' . $roomId . '&hotel_id=' . $hotelId . '&checkin=' . urlencode($checkin) . '&checkout=' . urlencode($checkout) . '&guests=' . $guests;
-    redirect('login.php');
+    $_SESSION['redirect_after_login'] = 'booking.php?' . http_build_query([
+        'room_id' => $roomId,
+        'hotel_id' => $hotelId,
+        'checkin' => $checkin,
+        'checkout' => $checkout,
+        'guests' => $guests,
+    ]);
+    redirect('register.php');
 }
 
 $room = getRoomById($roomId);
