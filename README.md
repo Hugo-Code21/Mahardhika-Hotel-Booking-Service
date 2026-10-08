@@ -62,3 +62,5 @@ Change demo passwords before using non-demo data. Admin accounts manage all user
 - `assets/style.css` — responsive styling and readable typography
 
 stay reading, stay coding!
+
+<!-- if you need any help just dm me -->
