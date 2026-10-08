@@ -61,4 +61,4 @@ Change demo passwords before using non-demo data. Admin accounts manage all user
 - `migrate_sqlite_to_mysql.php` — one-time CLI-only data importer
 - `assets/style.css` — responsive styling and readable typography
 
-The `.env` file is excluded from Git. Configure PHP to suppress displayed errors and send error logs to a protected location in production.
+stay reading, stay coding!
